@@ -1,5 +1,5 @@
 resource "kubernetes_secret" "cloud-creditials" {
-  depends_on = [ kubernetes_namespace.velero ]
+  # depends_on = [ kubernetes_namespace.velero ]
   metadata {
     name = "cloud-creditials"
     namespace = "velero" 
@@ -31,16 +31,80 @@ resource "kubernetes_namespace" "velero" {
 
 
 
-resource "null_resource" "velero_install" {
-  provisioner "local-exec" {
-    command = <<EOT
-      velero install \
-        --provider aws \
-        --plugins velero/velero-plugin-for-aws:v1.10.0 \
-        --bucket velero-notificacoes-prd \
-        --backup-location-config region=sa-east-1 \
-        --snapshot-location-config region=sa-east-1 \
-        --no-secret
-    EOT
+# resource "null_resource" "velero_install" {
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       velero install \
+#         --provider aws \
+#         --plugins velero/velero-plugin-for-aws:v1.10.0 \
+#         --bucket velero-notificacoes-prd \
+#         --backup-location-config region=sa-east-1 \
+#         --snapshot-location-config region=sa-east-1 \
+#         --no-secret
+#     EOT
+#   }
+# }
+
+
+resource "helm_release" "velero" {
+  name       = "velero"
+  repository = "https://vmware-tanzu.github.io/helm-charts"
+  chart      = "velero"
+  namespace  = "velero"
+  create_namespace = true
+
+  set {
+    name  = "configuration.backupStorageLocation[0].name"
+    value = var.bucket_name
+  }
+
+  set {
+    name  = "configuration.backupStorageLocation[0].provider"
+    value = "aws"
+  }
+
+  set {
+    name  = "configuration.backupStorageLocation[0].bucket"
+    value = var.bucket_name
+  }
+
+  set {
+    name  = "configuration.backupStorageLocation[0].config.region"
+    value = "sa-east-1"
+  }
+
+  set {
+    name  = "configuration.volumeSnapshotLocation[0].name"
+    value = var.bucket_name
+  }
+
+  set {
+    name  = "configuration.volumeSnapshotLocation[0].provider"
+    value = "aws"
+  }
+
+  set {
+    name  = "configuration.volumeSnapshotLocation[0].config.region"
+    value = var.region
+  }
+
+  set {
+    name  = "initContainers[0].name"
+    value = "velero-plugin-for-aws"
+  }
+
+  set {
+    name  = "initContainers[0].image"
+    value = "velero/velero-plugin-for-aws:v1.10.0"
+  }
+
+  set {
+    name  = "initContainers[0].volumeMounts[0].mountPath"
+    value = "/target"
+  }
+
+  set {
+    name  = "initContainers[0].volumeMounts[0].name"
+    value = "plugins"
   }
 }
