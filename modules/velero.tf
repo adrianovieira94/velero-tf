@@ -20,32 +20,6 @@ resource "kubernetes_namespace" "velero" {
   }
 }
 
-
-# resource "null_resource" "velero_install" {
-#   provisioner "local-exec" {
-#     command = <<EOT
-#       velero install --provider aws --plugins velero/velero-plugin-for-aws:v1.10.0 --bucket velero-notificacoes-prd --backup-location-config region=sa-east-1 --snapshot-location-config region=sa-east-1 --no-secret
-#     EOT
-#   }
-# }
-
-
-
-# resource "null_resource" "velero_install" {
-#   provisioner "local-exec" {
-#     command = <<EOT
-#       velero install \
-#         --provider aws \
-#         --plugins velero/velero-plugin-for-aws:v1.10.0 \
-#         --bucket velero-notificacoes-prd \
-#         --backup-location-config region=sa-east-1 \
-#         --snapshot-location-config region=sa-east-1 \
-#         --no-secret
-#     EOT
-#   }
-# }
-
-
 resource "helm_release" "velero" {
   name       = "velero"
   repository = "https://vmware-tanzu.github.io/helm-charts"
@@ -55,7 +29,7 @@ resource "helm_release" "velero" {
 
   set {
     name  = "configuration.backupStorageLocation[0].name"
-    value = var.bucket_name
+    value = "default"
   }
 
   set {
@@ -75,7 +49,7 @@ resource "helm_release" "velero" {
 
   set {
     name  = "configuration.volumeSnapshotLocation[0].name"
-    value = var.bucket_name
+    value = "default"
   }
 
   set {

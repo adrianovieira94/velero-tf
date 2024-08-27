@@ -1,6 +1,16 @@
 variable "region" {
   description = "Nome da região AWS "
   type        = string
+ }
+
+variable "account_id" {
+  description = "ID da conta AWS"
+  type        = string
+ }
+
+variable "profile" {
+  description = "Nome do bucket (de preferencia nome do cluster eks) "
+  type        = string
 }
 
 variable "bucket_name" {

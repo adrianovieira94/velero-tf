@@ -16,8 +16,11 @@ module "install_velero" {
   source         = "./modules"
   region         = var.region
   bucket_name    = var.bucket_name
+  account_id     = var.account_id
+  profile        = var.profile
   user_name      = var.user_name
   cluster_name   = var.cluster_name
   aws_access_key = var.aws_access_key
   aws_secret_key = var.aws_secret_key
+
 }

@@ -54,14 +54,21 @@ resource "aws_iam_role" "role_velero" {
   name = var.user_name
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"  # Altere conforme necessário para o serviço que vai assumir a role
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "ec2.amazonaws.com"  
         },
-        Action = "sts:AssumeRole"
+        "Action" : "sts:AssumeRole"
+      },
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "arn:aws:iam::${var.account_id}:user/${var.user_name}"
+        },
+        "Action" : "sts:AssumeRole"
       }
     ]
   })
