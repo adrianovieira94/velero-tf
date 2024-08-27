@@ -1,5 +1,5 @@
-resource "aws_iam_user" "user_velero" {
-  name = var.user_name
+data "aws_iam_user" "user_velero" {
+  user_name = var.user_name
 }
 
 resource "aws_iam_policy" "policy_user_velero" {
@@ -43,7 +43,32 @@ resource "aws_iam_policy" "policy_user_velero" {
   })
 }
 
+# Atachando Policy ao usuário
 resource "aws_iam_user_policy_attachment" "user_policy_attachment" {
-  user       = aws_iam_user.user_velero.name
+  user       = var.user_name
+  policy_arn = aws_iam_policy.policy_user_velero.arn
+}
+
+# Definição da política de assumir a role
+resource "aws_iam_role" "role_velero" {
+  name = var.user_name
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"  # Altere conforme necessário para o serviço que vai assumir a role
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+# Anexar a política à role
+resource "aws_iam_role_policy_attachment" "role_policy_attachment" {
+  role       = aws_iam_role.role_velero.name
   policy_arn = aws_iam_policy.policy_user_velero.arn
 }

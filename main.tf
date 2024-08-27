@@ -1,6 +1,7 @@
 provider "aws" {
   region              = var.region
   allowed_account_ids = [var.account_id]
+  profile             = var.profile
 }
 
 # terraform {
@@ -11,16 +12,12 @@ provider "aws" {
 #   }
 # }
 
-locals {
-  access_key = env("AWS_ACCESS_KEY_ID")
-  secret_key = env("AWS_SECRET_ACCESS_KEY")
-}
-
-
 module "install_velero" {
-  source      = "./modules"
-  region      = var.region
-  secret_file = var.secret_file
-  bucket_name = var.bucket_name
-  user_name   = var.user_name
+  source         = "./modules"
+  region         = var.region
+  bucket_name    = var.bucket_name
+  user_name      = var.user_name
+  cluster_name   = var.cluster_name
+  aws_access_key = var.aws_access_key
+  aws_secret_key = var.aws_secret_key
 }
