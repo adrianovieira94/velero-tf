@@ -1,14 +1,14 @@
 resource "kubernetes_secret" "cloud-creditials" {
   # depends_on = [ kubernetes_namespace.velero ]
   metadata {
-    name = "cloud-creditials"
-    namespace = "velero" 
+    name      = "cloud-creditials"
+    namespace = "velero"
     labels = {
-     "component" : "velero"
+      "component" : "velero"
     }
   }
 
- data = {    
+  data = {
     credentials = base64encode("[default]\naws_access_key_id=${var.aws_access_key}\naws_secret_access_key=${var.aws_secret_key}")
   }
   type = "Opaque" # Tipo de Secret padrão
@@ -21,10 +21,10 @@ resource "kubernetes_namespace" "velero" {
 }
 
 resource "helm_release" "velero" {
-  name       = "velero"
-  repository = "https://vmware-tanzu.github.io/helm-charts"
-  chart      = "velero"
-  namespace  = "velero"
+  name             = "velero"
+  repository       = "https://vmware-tanzu.github.io/helm-charts"
+  chart            = "velero"
+  namespace        = "velero"
   create_namespace = true
 
   set {
@@ -80,5 +80,21 @@ resource "helm_release" "velero" {
   set {
     name  = "initContainers[0].volumeMounts[0].name"
     value = "plugins"
+  }
+
+
+  set {
+    name  = "securityContext.fsGroup"
+    value = "65534"
+  }
+
+  set {
+    name  = "nodeAgent.useNodeAgent"
+    value = "true"
+  }
+}
+resource "null_resource" "velero_schedules" {
+  provisioner "local-exec" {
+    command = "sh ./modules/schedules.sh"
   }
 }

@@ -59,7 +59,7 @@ resource "aws_iam_role" "role_velero" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Service" : "ec2.amazonaws.com"  
+          "Service" : "ec2.amazonaws.com"
         },
         "Action" : "sts:AssumeRole"
       },
@@ -79,3 +79,4 @@ resource "aws_iam_role_policy_attachment" "role_policy_attachment" {
   role       = aws_iam_role.role_velero.name
   policy_arn = aws_iam_policy.policy_user_velero.arn
 }
+
