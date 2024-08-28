@@ -11,13 +11,13 @@ variable "account_id" {
 }
 
 variable "profile" {
-  description = "Nome do bucket (de preferencia nome do cluster eks) "
+  description = "Profile AWS Configure "
   type        = string
   default     = "notificacoes-prd"
 }
 
 variable "user_name" {
-  description = "Nome do bucket (de preferencia nome do cluster eks) "
+  description = "Nome do usuário criado para o velero"
   type        = string
   default     = "velero-notificacoes-prd"
 }
@@ -29,22 +29,21 @@ variable "bucket_name" {
 }
 
 variable "cluster_name" {
+  description = "Nome do Cluster EKS onde sera instalado o velero"
   type        = string
   sensitive   = true
-  description = "AWS Secret Key"
   default     = "eks-microservicos-notifi-prd"
 }
 
 variable "aws_access_key" {
+  description = "AWS Acess Key"
   type        = string
   sensitive   = true
-  description = "AWS Acess Key"
 
 }
 
 variable "aws_secret_key" {
+  description = "AWS Secret Key"
   type        = string
   sensitive   = true
-  description = "AWS Secret Key"
-
 }

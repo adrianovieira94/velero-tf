@@ -9,7 +9,7 @@ variable "account_id" {
 }
 
 variable "profile" {
-  description = "Nome do bucket (de preferencia nome do cluster eks) "
+  description = "Profile AWS Configure "
   type        = string
 }
 
@@ -19,25 +19,25 @@ variable "bucket_name" {
 }
 
 variable "user_name" {
-  description = "Nome do bucket (de preferencia nome do cluster eks) "
+  description = "Nome do usuário criado para o velero"
   type        = string
 }
 
 variable "cluster_name" {
+  description = "Nome do Cluster EKS onde sera instalado o velero"
   type        = string
   sensitive   = true
-  description = "AWS Secret Key"
 }
 
 variable "aws_access_key" {
+  description = "AWS Acess Key"
   type        = string
   sensitive   = true
-  description = "AWS Acess Key"
 }
 
 variable "aws_secret_key" {
+  description = "AWS Secret Key"
   type        = string
   sensitive   = true
-  description = "AWS Secret Key"
 }
 

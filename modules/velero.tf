@@ -93,8 +93,23 @@ resource "helm_release" "velero" {
     value = "true"
   }
 }
-resource "null_resource" "velero_schedules" {
+
+#### Schedules Credisis
+# ttl = periodo de retencao em horas
+
+resource "null_resource" "velero_schedule" {
+  depends_on = [helm_release.velero]
   provisioner "local-exec" {
-    command = "sh ./modules/schedules.sh"
+    command = <<EOT
+
+# Diário 7 dias
+velero create schedule daily-${var.cluster_name} --schedule="0 */6 * * *" --ttl=168h --data-mover=velero
+
+# Semanal 15 dias
+velero create schedule weekly-${var.cluster_name} --schedule="0 14 * * 5" --ttl=336h --data-mover=velero
+
+# Mensal 90 dias
+velero create schedule monthly-${var.cluster_name} --schedule="0 9 * * 5" --ttl=2016h --data-mover=velero
+EOT
   }
 }
