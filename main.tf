@@ -4,13 +4,14 @@ provider "aws" {
   profile             = var.profile
 }
 
-# terraform {
-#   backend "s3" {
-#     bucket = "637423356519-tf"
-#     key    = "velero-notificacoes-prod/terraform.tfstate"
-#     region = "sa-east-1"
-#   }
-# }
+terraform {
+  backend "s3" {
+    profile = "notificacoes-prd"
+    bucket  = "velero-notificacoes-prd"
+    key     = "TF_STATE/terraform.tfstate"
+    region  = "sa-east-1"
+  }
+}
 
 module "install_velero" {
   source         = "./modules"
